@@ -5,6 +5,7 @@ export const Rooms = {
     this.list[roomId] = {
       id: roomId,
       players: [],
+      npcs: [], // ✅ IMPORTANTE
       combat: null,
 
       broadcast(data) {
