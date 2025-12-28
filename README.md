@@ -61,3 +61,82 @@ cronicas-do-eter/
 cd backend
 npm install
 npm start
+
+---
+
+# 2️⃣ AJUSTAR **ROOT DIRECTORY** NO RENDER (MUITO IMPORTANTE)
+
+Isso é **ESSENCIAL** quando backend e frontend estão no **mesmo repositório**.
+
+---
+
+## 🎯 Objetivo
+Dizer ao **Render** que:
+- O backend está dentro da pasta `backend/`
+- O `package.json` NÃO está na raiz
+
+---
+
+## 🛠️ PASSO A PASSO NO RENDER
+
+### 1️⃣ Acesse o painel do serviço no **:contentReference[oaicite:2]{index=2}**
+
+- Vá em **Dashboard**
+- Clique no seu serviço (`cronicas-backend`)
+
+---
+
+### 2️⃣ Vá em **Settings**
+
+Procure a seção **Build & Deploy**
+
+---
+
+### 3️⃣ Configure assim:
+
+| Campo | Valor |
+|----|----|
+| **Root Directory** | `backend` |
+| **Build Command** | `npm install` |
+| **Start Command** | `npm start` |
+| **Branch** | `main` |
+
+📌 **Root Directory é o ponto crítico**  
+Sem isso, o Render **não encontra o `package.json`**.
+
+---
+
+### 4️⃣ Salve e redeploy
+
+- Clique em **Save Changes**
+- Depois **Manual Deploy → Deploy Latest Commit**
+
+---
+
+## ✅ Como saber se está certo
+
+Nos logs do Render você deve ver:
+👉 Root Directory está errado.
+
+---
+
+# ✅ CHECKLIST FINAL
+
+✔ README profissional  
+✔ Monorepo organizado  
+✔ Backend separado corretamente  
+✔ Render configurado corretamente  
+✔ GitHub Pages pronto  
+
+---
+
+## 🚀 PRÓXIMO PASSO (POSSO FAZER AGORA)
+
+Posso:
+1️⃣ Criar **página de apresentação do jogo**
+2️⃣ Criar **lobby visual**
+3️⃣ Criar **fila visual de turnos**
+4️⃣ Integrar **LLM real**
+5️⃣ Preparar **Itch.io**
+
+👉 **Qual você quer agora?**
