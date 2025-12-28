@@ -5,7 +5,7 @@ let socket;
 let playerId = localStorage.getItem("playerId");
 
 function connect() {
-  socket = new WebSocket("wss://SEU-SERVER.onrender.com");
+  socket = new WebSocket("wss://frontend-rpg-multiplayer.onrender.com");
 
   socket.onopen = () => {
     socket.send(JSON.stringify({
@@ -54,3 +54,4 @@ function connect() {
 connect();
 
 export { socket };
+
