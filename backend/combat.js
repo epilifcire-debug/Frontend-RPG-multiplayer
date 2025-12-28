@@ -2,27 +2,29 @@ import { rollInitiative } from "./initiative.js";
 
 export const CombatSystem = {
 
+  // ===============================
+  // INICIAR COMBATE
+  // ===============================
   start(room) {
-    const entities = [
-      ...room.players.map(p => ({
-        id: p.id,
-        name: p.name,
-        type: "player",
-        dex: p.dex || 0,
-        ws: p.ws
-      })),
-      ...room.npcs
-    ];
+    if (!room.players || room.players.length === 0) return;
+
+    const entities = room.players.map(player => ({
+      id: player.id,
+      name: player.name,
+      type: "player",
+      dex: player.dex || 0
+    }));
 
     room.combat = {
-      turnOrder: rollInitiative(entities),
-      currentTurn: 0,
+      active: true,
       round: 1,
-      phase: "combat"
+      currentTurn: 0,
+      turnOrder: rollInitiative(entities)
     };
 
     room.broadcast({
       type: "combat_start",
+      round: room.combat.round,
       order: room.combat.turnOrder.map(e => ({
         id: e.id,
         name: e.name,
@@ -33,7 +35,12 @@ export const CombatSystem = {
     this.startTurn(room);
   },
 
+  // ===============================
+  // INÍCIO DO TURNO
+  // ===============================
   startTurn(room) {
+    if (!room.combat || !room.combat.active) return;
+
     const combat = room.combat;
     const entity = combat.turnOrder[combat.currentTurn];
 
@@ -46,37 +53,53 @@ export const CombatSystem = {
       },
       round: combat.round
     });
-
-    // Se for NPC, a IA joga
-    if (entity.type === "npc") {
-      setTimeout(() => {
-        this.npcAction(room, entity);
-        this.endTurn(room);
-      }, 1000);
-    }
   },
 
+  // ===============================
+  // FINALIZAR TURNO
+  // ===============================
   endTurn(room) {
+    if (!room.combat || !room.combat.active) return;
+
     const combat = room.combat;
     combat.currentTurn++;
 
+    // Próxima rodada
     if (combat.currentTurn >= combat.turnOrder.length) {
       combat.currentTurn = 0;
       combat.round++;
+
+      room.broadcast({
+        type: "new_round",
+        round: combat.round
+      });
     }
 
     this.startTurn(room);
   },
 
-  validateAction(room, playerId) {
-    const current = room.combat.turnOrder[room.combat.currentTurn];
+  // ===============================
+  // VALIDAÇÃO DE TURNO (ANTI-CHEAT)
+  // ===============================
+  validate(room, playerId) {
+    if (!room.combat || !room.combat.active) return false;
+
+    const current =
+      room.combat.turnOrder[room.combat.currentTurn];
+
     return current.id === playerId;
   },
 
-  npcAction(room, npc) {
+  // ===============================
+  // FINALIZAR COMBATE
+  // ===============================
+  stop(room) {
+    if (!room.combat) return;
+
     room.broadcast({
-      type: "narration",
-      text: `${npc.name} se move e ataca!`
+      type: "combat_end"
     });
+
+    room.combat = null;
   }
 };
